@@ -21,6 +21,7 @@
 package net.newpipe.newplayer.repository
 
 import android.os.Build
+import android.content.Context
 import android.net.http.HttpEngine
 import android.graphics.Bitmap
 import androidx.media3.common.MediaMetadata
@@ -122,13 +123,16 @@ interface MediaRepository {
     /**
      * Supply a custom [HttpDataSource.Factory]. This is important for Youtube.
      */
-    fun getHttpDataSourceFactory(item: String, context): DataSource.Factory {
+    fun getHttpDataSourceFactory(item: String, context: Context): DataSource.Factory {
         // return best dataSourceFactory based on the available best dataSoures
         if (Build.VERSION.SDK_INT >= 34) {
             return HttpEngineDataSource.Factory(HttpEngine.Builder(context).build(), Executors.newSingleThreadExecutor())
         } else {
             if (!CronetProvider.getAllProviders(context).filter { it.isEnabled }.toList().isEmpty()) {
-                return CronetDataSource.Factory(CronetEngine.Builder(context).enableHttpCache(CronetEngine.Builder.HTTP_CACHE_IN_MEMORY, 10 * 1024 * 1024).build(), Executors.newSingleThreadExecutor())
+                val cronetEngine = CronetEngine.Builder(context)
+                    .enableHttpCache(CronetEngine.Builder.HTTP_CACHE_IN_MEMORY, 10 * 1024 * 1024)
+                    .build()
+                return CronetDataSource.Factory(cronetEngine, Executors.newSingleThreadExecutor())
             } else {
                 return DefaultHttpDataSource.Factory()
             }
