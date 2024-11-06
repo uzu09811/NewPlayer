@@ -25,7 +25,6 @@ import android.content.Context
 import android.net.http.HttpEngine
 import android.graphics.Bitmap
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.HttpDataSource
@@ -124,11 +123,11 @@ interface MediaRepository {
     /**
      * Supply a custom [HttpDataSource.Factory]. This is important for Youtube.
      */
-    @OptIn(markerClass = UnstableApi::class)
     fun getHttpDataSourceFactory(item: String, context: Context): DataSource.Factory {
         // return best dataSourceFactory based on the available best dataSoures
         if (Build.VERSION.SDK_INT >= 34) {
-            return HttpEngineDataSource.Factory(HttpEngine.Builder(context).build(), Executors.newSingleThreadExecutor())
+            val httpEngine = HttpEngine.Builder(context).build()
+            return HttpEngineDataSource.Factory(httpEngine, Executors.newSingleThreadExecutor())
         } else {
             if (!CronetProvider.getAllProviders(context).filter { it.isEnabled }.toList().isEmpty()) {
                 val cronetEngine = CronetEngine.Builder(context)
