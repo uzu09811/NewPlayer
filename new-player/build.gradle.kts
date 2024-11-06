@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.media3.datasource_cronet)
     implementation(libs.coil.compose)
     implementation(libs.reorderable)
     implementation(libs.androidx.media3.session)
