@@ -71,7 +71,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.media3.common)
-    implementation(libs.androidx.media3.datasource_cronet)
+    implementation("androidx.media3:media3-datasource-cronet:1.4.1")
     implementation(libs.coil.compose)
     implementation(libs.reorderable)
     implementation(libs.androidx.media3.session)
