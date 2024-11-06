@@ -124,7 +124,7 @@ interface MediaRepository {
     /**
      * Supply a custom [HttpDataSource.Factory]. This is important for Youtube.
      */
-    @OptIn(UnstableApi::class)
+    @OptIn(markerClass = UnstableApi::class)
     fun getHttpDataSourceFactory(item: String, context: Context): DataSource.Factory {
         // return best dataSourceFactory based on the available best dataSoures
         if (Build.VERSION.SDK_INT >= 34) {
