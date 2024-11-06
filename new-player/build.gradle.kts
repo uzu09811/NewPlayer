@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.adaptive.android)
 
+    implementation("com.google.android.gms:play-services-cronet:18.1.0")
+
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
 

@@ -20,14 +20,22 @@
 
 package net.newpipe.newplayer.repository
 
+import android.os.Build
+import android.net.http.HttpEngine
 import android.graphics.Bitmap
 import androidx.media3.common.MediaMetadata
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.HttpDataSource
+import androidx.media3.datasource.cronet.CronetDataSource
+import androidx.media3.datasource.HttpEngineDataSource
+import org.chromium.net.CronetEngine
+import org.chromium.net.CronetProvider
 import net.newpipe.newplayer.data.Chapter
 import net.newpipe.newplayer.data.Stream
 import net.newpipe.newplayer.data.Subtitle
 import net.newpipe.newplayer.data.StreamTrack
+import java.util.concurrent.Executors
 
 /**
  * You, dear Developer who uses NewPlayer, will want to implement MediaRepository.
@@ -114,8 +122,18 @@ interface MediaRepository {
     /**
      * Supply a custom [HttpDataSource.Factory]. This is important for Youtube.
      */
-    fun getHttpDataSourceFactory(item: String): HttpDataSource.Factory =
-        DefaultHttpDataSource.Factory()
+    fun getHttpDataSourceFactory(item: String, context): DataSource.Factory {
+        // return best dataSourceFactory based on the available best dataSoures
+        if (Build.VERSION.SDK_INT >= 34) {
+            return HttpEngineDataSource.Factory(HttpEngine.Builder(context).build(), Executors.newSingleThreadExecutor())
+        } else {
+            if (!CronetProvider.getAllProviders(context).filter { it.isEnabled }.toList().isEmpty()) {
+                return CronetDataSource.Factory(CronetEngine.Builder(context).enableHttpCache(CronetEngine.Builder.HTTP_CACHE_IN_MEMORY, 10 * 1024 * 1024).build(), Executors.newSingleThreadExecutor())
+            } else {
+                return DefaultHttpDataSource.Factory()
+            }
+        }
+    }
 
     /**
      * Get MediaMetadata information for a certain item. Please refer to the media3 documentation
